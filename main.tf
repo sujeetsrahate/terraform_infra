@@ -1,13 +1,13 @@
 terraform {
   backend "s3" {
     bucket = "my-tf-state-bucket15"
-    key    = "us-east-1/terraform.tfstate"
-    region = "us-east-1"
+    key    = "us-west-1/terraform.tfstate"
+    region = "us-west-1"
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = "us-west-1"
 }
 
 data "aws_availability_zones" "available" {}
