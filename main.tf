@@ -214,7 +214,7 @@ module "eks" {
       instance_types = ["t3.medium"]
       name           = "default"
       ami_type       = "AL2_x86_64"
-      key_name       = "bhargav1"
+      key_name       = "practise1"
     }
   }
 }
