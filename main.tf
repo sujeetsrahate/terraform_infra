@@ -58,7 +58,7 @@ resource "aws_subnet" "private_2" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc" # Updated deprecated vpc = true
 }
 
 resource "aws_nat_gateway" "nat" {
@@ -150,6 +150,11 @@ resource "aws_security_group" "rds" {
 resource "aws_db_subnet_group" "rds" {
   name       = "ecommerce-db-subnet-group"
   subnet_ids = [aws_subnet.private_1.id, aws_subnet.private_2.id]
+
+  lifecycle {
+    prevent_destroy = true
+    ignore_changes  = [name]
+  }
 }
 
 resource "aws_db_instance" "rds" {
@@ -164,6 +169,10 @@ resource "aws_db_instance" "rds" {
   publicly_accessible     = false
   backup_retention_period = 1
   db_name                 = "catalogdb"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_dynamodb_table" "cart" {
@@ -177,6 +186,10 @@ resource "aws_dynamodb_table" "cart" {
     name = "id"
     type = "S"
   }
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 module "eks" {
@@ -185,10 +198,12 @@ module "eks" {
   cluster_version = "1.29"
 
   cluster_endpoint_public_access = true
+
   subnet_ids = [
     aws_subnet.private_1.id,
     aws_subnet.private_2.id
   ]
+
   vpc_id = aws_vpc.main.id
 
   eks_managed_node_groups = {
